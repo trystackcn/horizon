@@ -80,6 +80,12 @@ class Port(QuantumAPIDictWrapper):
             'UP' if apiresource['admin_state_up'] else 'DOWN'
         super(Port, self).__init__(apiresource)
 
+class Route(QuantumAPIDictWrapper):
+    _attrs = ['tenant_id','id','name','status','admin_state_up','gw_port_id']
+
+    def __init__(self, apiresource):
+        super(Route,self).__init__(apiresource)
+
 
 IP_VERSION_DICT = {4: 'IPv4', 6: 'IPv6'}
 
@@ -259,3 +265,9 @@ def port_modify(request, port_id, **kwargs):
     body = {'port': kwargs}
     port = quantumclient(request).update_port(port_id, body=body).get('port')
     return Port(port)
+
+def router_list(request, **params):
+    LOG.debug("route_get(): params=%s" % (params))
+    routes = quantumclient(request).list_routers(**params).get('routers')
+    return [Route(r) for r in routes]
+    

@@ -53,7 +53,20 @@ class IndexView(tables.DataTableView):
             exceptions.handle(self.request, msg)
         for n in networks:
             n.set_id_as_name_if_empty()
-        return networks
+        return networks 
+
+    def get_routers_data(self):
+        try:
+            tenant_id = self.request.user.tenant_id 
+            routers = api.quantum.router_list(self.request, tenant_id)
+        except:
+            routers = []
+            msg = _('Router list can not be retrieved.')
+            exceptions.handle(self.request, msg)
+        for r in routers:
+            n.set_id_as_name_if_empty()
+        return routers
+            
 
 
 class CreateView(workflows.WorkflowView):
